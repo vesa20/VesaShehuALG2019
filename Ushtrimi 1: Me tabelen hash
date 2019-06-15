@@ -1,0 +1,72 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+typedef struct list{
+string word;
+struct list* next;
+};
+
+int main(int argc, char** argv) {
+cout<<"Fjalor me tabele hash."<<endl;
+cout<<"Jepni emrin e skedarit"<<endl;
+
+string fileName, item;
+cin>>fileName;
+ifstream input;
+input.open(fileName);
+vector<string> words;
+
+if(!input.is_open()){
+//rasti i gabimit ne hapjen e skedarit
+cout<<"Gabim ne hapjen e skedarit!"<<endl;
+}
+else{
+while(input>>item){
+if(!(find(words.begin(), words.end(), item) != words.end())){ 
+words.push_back(item);
+}
+}
+
+int n=words.size();
+list* hashTable[n];
+for(int i=0; i<n; i++){
+hashTable[i]=NULL;
+}
+int hashed;
+for(int i=0; i<n; i++){
+hashed=hashMe(words[i],n);
+hashTable[hashed]=shto(hashTable[hashed],words[i]);
+}
+
+for(int i=0; i<n; i++){
+list*l = hashTable[i];
+while(l!=NULL){
+cout<<l->word<<endl;
+l = l->next;
+}
+}
+}
+return 0;
+}
+
+list* shto(list*head, string s){
+list*tmp;
+tmp = new list;
+tmp->word=s;
+tmp->next=head;
+head = tmp;
+}
+
+int hashMe(string s, int n){
+if(n<0)return -1;
+int g = 17;
+int hash;
+for(int i=0; i<s.length(); i++){
+hash=g*hash+s[i];
+}
+return hash%n;
+}  
