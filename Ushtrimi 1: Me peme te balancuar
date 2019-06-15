@@ -1,0 +1,136 @@
+ #include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+cout<<"Fjalor me peme binare."<<endl;
+cout<<"Jepni emrin e skedarit"<<endl;
+
+string fileName, fjale;
+cin>>fileName;
+ifstream input;
+input.open(fileName);
+
+pema*root = new pema;
+root = NULL;
+
+if(!input.is_open()){ 
+cout<<"Gabim"<<endl;
+}
+else{
+while(input>>fjale){
+if(!alreadyExist(root,fjale)){ 
+root=add(root,fjale);
+}
+}
+}
+print(root);
+return 0;
+}
+
+bool alreadyExist(pema*root, string s){
+if(root==NULL)return false;
+if(root->word==s)return true;
+
+bool a=alreadyExist(root->left,s);
+if(a)return true;
+
+bool b=alreadyExist(root->right,s);
+return b;
+}
+
+int height(pema* p){  
+    if (p==NULL)return 0;
+    return p->height;
+}  
+
+
+int max(int a, int b){  
+    return (a > b)? a : b;  
+}  
+
+
+pema* rightRotate(pema *y){  
+    pema* x = y->left;  
+    pema* T2 = x->right;  
+    
+    x->right = y;  
+    y->left = T2;  
+  
+    y->height = max(height(y->left), 
+                    height(y->right)) + 1;  
+    x->height = max(height(x->left), 
+                    height(x->right)) + 1;  
+  
+    return x;  
+}  
+  
+pema* leftRotate(pema* x){  
+    pema* y = x->right;  
+    pema* T2 = y->left;  
+    
+    y->left = x;  
+    x->right = T2;  
+  
+    x->height = max(height(x->left),     
+                    height(x->right)) + 1;  
+    y->height = max(height(y->left),  
+                    height(y->right)) + 1;  
+  
+    return y;  
+}  
+  
+int getBalance(pema* p){  
+    if (p == NULL)return 0;  
+    return height(p->left) - height(p->right);  
+}  
+  
+pema* add(pema* root, string s){ 
+
+    pema*p = new pema; 
+    p->word = s;
+    p->left = NULL;  
+    p->right = NULL;  
+    p->height = 1; //lartesia = 1 ne fillim si gjethe
+    
+  
+    if (root == NULL)return p;  
+  
+    if (s < root->word){ 
+        root->left = shto(root->left, s); 
+}
+    else{
+        root->right = shto(root->right, s);  
+    }
+    
+    root->height = 1 + max(height(root->left),  
+                        height(root->right));  
+  
+    int balance = getBalance(root);  
+  
+    if (balance > 1 && s < root->left->word)  
+        return rightRotate(root);  
+  
+    if (balance < -1 && s > root->right->word)  
+        return leftRotate(root);  
+  
+    if (balance > 1 && s > root->left->word){  
+        root->left = leftRotate(root->left);  
+        return rightRotate(root);  
+    }  
+  
+    if (balance < -1 && s < root->right->word){  
+        root->right = rightRotate(root->right);  
+        return leftRotate(root);  
+    }  
+  
+    return root;
+}  
+
+void print(pema*root){
+if(root==NULL)return;
+print(root->left);
+cout<<root->word<<endl;
+print(root->right);
+}
