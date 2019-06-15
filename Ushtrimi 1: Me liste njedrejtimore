@@ -1,0 +1,68 @@
+ #include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+typedef struct lista{
+string word;
+struct lista* next;
+};
+
+
+int main() {
+cout<<"Fjalor me liste 1D"<<endl;
+cout<<"Jepni emrin e skedarit"<<endl;
+
+string fileName, fjale;
+cin>>fileName;
+ifstream input;
+input.open(fileName);
+
+lista*head = new lista;
+head = NULL;
+
+if(!input.is_open()){
+cout<<"Gabim"<<endl;
+}
+else{
+while(input>>fjale){
+if(!alreadyExist(head,fjale)){
+head=shto(head,fjale);
+}
+}
+}
+
+print(head);
+return 0;
+}
+
+bool alreadyExist(lista*head, string s){
+lista*control;
+control = head;
+while(control!=NULL){
+if(control->word==s){
+return true;
+}
+else{
+control=control->next;
+}
+}
+return false;
+}
+
+lista* shto(lista*head, string s){
+lista*tmp;
+tmp = new lista;
+tmp->word=s;
+tmp->next=head;
+head = tmp;
+}
+
+void print(lista*head){
+lista*control;
+control = head;
+while(control!=NULL){
+cout<<control->word<<endl;
+control=control->next;
+}
+}
