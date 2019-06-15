@@ -1,0 +1,86 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+typedef struct pema{
+	string word;
+	struct pema* right;
+	struct pema* left;
+};
+
+int main() {
+	cout<<"Fjalor me peme binare."<<endl;
+	cout<<"Jepni emrin e skedarit"<<endl;
+
+	string fileName, fjale;
+	cin>>fileName;
+	ifstream input;
+	input.open(fileName);
+
+	pema*root = new pema;
+	root = NULL;
+	
+	if(!input.is_open()){
+		cout<<"Gabim"<<endl;
+	}
+	else{
+		while(input>>fjale){
+			if(!alreadyExist(root,fjale)){ 
+				root=add(root,fjale); 
+			}
+		}
+	}
+	print(root);
+	return 0;
+}
+
+void print(pema*fjale){
+	if(root==NULL)return;
+	print(root->left);
+	cout<<root->word<<endl;
+	print(root->right);
+}
+
+
+bool alreadyExist(pema*root, string s){
+	if(root==NULL)return false;
+	if(root->word==s)return true;
+	
+	bool a=alreadyExist(root->left,s);
+	if(a)return true;
+	
+	bool b=alreadyExist(root->right,s);
+	return b;
+}
+
+
+
+
+
+pema* shto(pema*root, string s){
+	pema*p;
+	p=new pema;
+    p->word=s;
+    p->right=NULL;
+    p->left=NULL;
+
+    if(root==NULL)return p;
+    
+    pema*parent = NULL;
+    pema*current = root;
+    while(current!=NULL){
+    	parent=current;
+	//kontrollojme nese elementi ndodhet ne te majte apo ne te djathte te cdo elementi per te gjetur ku do vendoset
+    	if(current->word<s)current=current->right;
+    	else{
+    		current=current->left;
+		}
+	}
+		if(parent->word<s){
+			parent->right=p;
+		}
+		else{
+			parent->left=p;
+		}
+    return root;//kthejme rrenjen
+}
